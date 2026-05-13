@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Zap, Info } from 'lucide-react';
 import { getSessionDetail } from '../api/analytics';
 import SessionTimeline from '../components/SessionTimeline';
-import Loader from '../components/Loader';
+import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 
 const SessionDetail = () => {
@@ -11,22 +11,36 @@ const SessionDetail = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getSessionDetail(sessionId);
+      setEvents(data);
+    } catch (err) {
+      console.error('Error fetching session details:', err);
+      setError('Could not retrieve session playback data.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getSessionDetail(sessionId);
-        setEvents(data);
-      } catch (err) {
-        console.error('Error fetching session details:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, [sessionId]);
 
-  if (loading) return <Loader />;
+  if (error) return (
+    <div className="py-20">
+      <EmptyState 
+        variant="error" 
+        message="Session Load Failed" 
+        subtext={error} 
+        onRetry={fetchData}
+      />
+    </div>
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-700">
@@ -43,16 +57,18 @@ const SessionDetail = () => {
           <div className="space-y-2">
             <h2 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
               Session Detail
-              <span className="text-xs bg-blue-500/10 text-blue-400 font-mono px-2 py-1 rounded border border-blue-500/20">{sessionId}</span>
+              {loading ? <Skeleton className="h-6 w-32" /> : (
+                <span className="text-xs bg-blue-500/10 text-blue-400 font-mono px-2 py-1 rounded border border-blue-500/20">{sessionId}</span>
+              )}
             </h2>
             <div className="flex items-center space-x-6 text-slate-400 text-sm">
               <div className="flex items-center space-x-2">
                 <Zap className="w-4 h-4 text-amber-500" />
-                <span>{events.length} total events recorded</span>
+                {loading ? <Skeleton className="h-4 w-24" /> : <span>{events.length} total events recorded</span>}
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4 text-emerald-500" />
-                <span>Active for {events.length > 1 ? 'Captured Duration' : 'Single interaction'}</span>
+                {loading ? <Skeleton className="h-4 w-24" /> : <span>{events.length > 1 ? 'Captured Duration' : 'Single interaction'}</span>}
               </div>
             </div>
           </div>
@@ -65,7 +81,13 @@ const SessionDetail = () => {
         </div>
       </header>
 
-      {events.length > 0 ? (
+      {loading ? (
+        <div className="max-w-4xl mx-auto space-y-6">
+          <Skeleton variant="tableRow" className="h-24" />
+          <Skeleton variant="tableRow" className="h-24" />
+          <Skeleton variant="tableRow" className="h-24" />
+        </div>
+      ) : events.length > 0 ? (
         <div className="max-w-4xl mx-auto">
           <SessionTimeline events={events} />
         </div>

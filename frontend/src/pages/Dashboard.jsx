@@ -1,27 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Users, MousePointerClick, FileType, Search } from 'lucide-react';
-import { getSessions } from '../api/analytics';
 import StatCard from '../components/StatCard';
 import SessionTable from '../components/SessionTable';
-import Loader from '../components/Loader';
+import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
+import { getSessions } from '../api/analytics';
 
 const Dashboard = () => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getSessions();
+      setSessions(data);
+    } catch (err) {
+      console.error('Error fetching sessions:', err);
+      setError('Unable to reach the analytics backend. Please check your connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getSessions();
-        setSessions(data);
-      } catch (err) {
-        console.error('Error fetching sessions:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
@@ -32,7 +37,16 @@ const Dashboard = () => {
   const totalEvents = sessions.reduce((acc, curr) => acc + curr.total_events, 0);
   const totalPages = new Set(sessions.flatMap(s => s.pages_visited)).size;
 
-  if (loading) return <Loader />;
+  if (error) return (
+    <div className="py-12">
+      <EmptyState 
+        variant="error"
+        message="Backend Connection Failed"
+        subtext={error}
+        onRetry={fetchData}
+      />
+    </div>
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -55,9 +69,19 @@ const Dashboard = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StatCard title="Total Sessions" value={sessions.length} icon={Users} color="blue" />
-        <StatCard title="Total Events" value={totalEvents} icon={MousePointerClick} color="emerald" />
-        <StatCard title="Active Pages" value={totalPages} icon={FileType} color="purple" />
+        {loading ? (
+          <>
+            <Skeleton variant="card" className="h-40" />
+            <Skeleton variant="card" className="h-40" />
+            <Skeleton variant="card" className="h-40" />
+          </>
+        ) : (
+          <>
+            <StatCard title="Total Sessions" value={sessions.length} icon={Users} color="blue" />
+            <StatCard title="Total Events" value={totalEvents} icon={MousePointerClick} color="emerald" />
+            <StatCard title="Active Pages" value={totalPages} icon={FileType} color="purple" />
+          </>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -66,7 +90,15 @@ const Dashboard = () => {
           <span className="text-xs text-slate-500 font-mono">Showing {filteredSessions.length} results</span>
         </div>
         
-        {filteredSessions.length > 0 ? (
+        {loading ? (
+          <div className="space-y-4">
+            <Skeleton variant="tableRow" className="h-12" />
+            <Skeleton variant="tableRow" />
+            <Skeleton variant="tableRow" />
+            <Skeleton variant="tableRow" />
+            <Skeleton variant="tableRow" />
+          </div>
+        ) : filteredSessions.length > 0 ? (
           <SessionTable sessions={filteredSessions} />
         ) : (
           <EmptyState 

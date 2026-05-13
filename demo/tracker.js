@@ -123,9 +123,9 @@
       body: JSON.stringify(payload),
     })
       .then((res) => res.json())
-      .then((data) =>
-        console.log("Event tracked:", eventType, payload, data)
-      )
+      .then((data) => {
+        // Event successfully tracked
+      })
       .catch((err) =>
         console.error("Tracking error:", err)
       );
@@ -157,5 +157,4 @@
     });
   });
 
-  console.log("CausalFunnel tracker loaded ✅");
 })();

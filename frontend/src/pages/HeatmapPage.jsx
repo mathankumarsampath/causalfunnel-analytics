@@ -3,7 +3,7 @@ import { Flame, PieChart as PieIcon, Map, BarChart3, ChevronDown } from 'lucide-
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 import { getSessions, getHeatmap } from '../api/analytics';
 import HeatmapCanvas from '../components/HeatmapCanvas';
-import Loader from '../components/Loader';
+import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 
 const HeatmapPage = () => {
@@ -11,21 +11,26 @@ const HeatmapPage = () => {
   const [selectedPage, setSelectedPage] = useState('');
   const [clicks, setClicks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [fetchingHeatmap, setFetchingHeatmap] = useState(false);
 
+  const fetchPages = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getSessions();
+      const uniquePages = [...new Set(data.flatMap(s => s.pages_visited))];
+      setPages(uniquePages);
+      if (uniquePages.length > 0) setSelectedPage(uniquePages[0]);
+    } catch (err) {
+      console.error('Error fetching pages:', err);
+      setError('Unable to load tracking pages. Backend might be offline.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPages = async () => {
-      try {
-        const data = await getSessions();
-        const uniquePages = [...new Set(data.flatMap(s => s.pages_visited))];
-        setPages(uniquePages);
-        if (uniquePages.length > 0) setSelectedPage(uniquePages[0]);
-      } catch (err) {
-        console.error('Error fetching pages:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPages();
   }, []);
 
@@ -46,7 +51,16 @@ const HeatmapPage = () => {
     fetchHeatmapData();
   }, [selectedPage]);
 
-  if (loading) return <Loader />;
+  if (error) return (
+    <div className="py-20">
+      <EmptyState 
+        variant="error"
+        message="Analytics Offline"
+        subtext={error}
+        onRetry={fetchPages}
+      />
+    </div>
+  );
 
   // Aggregation for charts
   const deviceData = Object.entries(
@@ -72,20 +86,32 @@ const HeatmapPage = () => {
         <div className="space-y-2">
           <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest ml-1">Target Page</label>
           <div className="relative min-w-[300px]">
-             <select 
-               value={selectedPage} 
-               onChange={(e) => setSelectedPage(e.target.value)}
-               className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 pl-5 pr-10 text-slate-200 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer"
-             >
-               {pages.map(page => <option key={page} value={page}>{page}</option>)}
-             </select>
-             <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+             {loading ? <Skeleton className="h-12 w-full" /> : (
+               <>
+                 <select 
+                   value={selectedPage} 
+                   onChange={(e) => setSelectedPage(e.target.value)}
+                   className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 pl-5 pr-10 text-slate-200 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer"
+                 >
+                   {pages.map(page => <option key={page} value={page}>{page}</option>)}
+                 </select>
+                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+               </>
+             )}
           </div>
         </div>
       </header>
 
-      {fetchingHeatmap ? (
-        <Loader />
+      {fetchingHeatmap || loading ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+           <div className="lg:col-span-2 space-y-4">
+              <Skeleton className="h-[500px] w-full rounded-2xl" />
+           </div>
+           <div className="space-y-8">
+              <Skeleton variant="card" className="h-64" />
+              <Skeleton variant="card" className="h-48" />
+           </div>
+        </div>
       ) : clicks.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Visualizer */}

@@ -19,17 +19,18 @@ const SessionTable = ({ sessions }) => {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-      <table className="w-full text-left border-collapse">
-        <thead className="bg-slate-800/50 border-b border-slate-800">
-          <tr>
-            <th className="px-6 py-4 text-sm font-semibold text-slate-400">Session ID</th>
-            <th className="px-6 py-4 text-sm font-semibold text-slate-400">Events</th>
-            <th className="px-6 py-4 text-sm font-semibold text-slate-400">Devices</th>
-            <th className="px-6 py-4 text-sm font-semibold text-slate-400">First Seen</th>
-            <th className="px-6 py-4 text-sm font-semibold text-slate-400 text-right">Actions</th>
-          </tr>
-        </thead>
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[800px]">
+          <thead>
+            <tr className="bg-slate-900/50 border-b border-slate-800">
+              <th className="px-6 py-4 text-sm font-semibold text-slate-400">Session ID</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-400">Events</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-400">Devices</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-400">First Seen</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-400 text-right">Actions</th>
+            </tr>
+          </thead>
         <tbody className="divide-y divide-slate-800">
           {sessions.map((session) => (
             <tr key={session.session_id} className="hover:bg-slate-800/30 transition-colors group">
@@ -68,7 +69,8 @@ const SessionTable = ({ sessions }) => {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 };
