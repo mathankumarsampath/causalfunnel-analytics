@@ -173,4 +173,5 @@ def get_heatmap():
 
 # Run the Flask dev server
 if __name__ == "__main__":
-    app.run(debug=True)
+    # use_reloader=False helps avoid OSError [WinError 10038] on some Windows setups
+    app.run(debug=True, use_reloader=False)
