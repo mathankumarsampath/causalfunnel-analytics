@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Flame, Activity, X } from 'lucide-react';
 import { getHealth } from '../api/analytics';
 

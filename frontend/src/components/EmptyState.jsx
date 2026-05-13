@@ -1,3 +1,4 @@
+import React from 'react';
 import { Database, AlertCircle, RefreshCcw } from 'lucide-react';
 
 const EmptyState = ({ 

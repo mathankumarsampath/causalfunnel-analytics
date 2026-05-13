@@ -1,3 +1,5 @@
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
