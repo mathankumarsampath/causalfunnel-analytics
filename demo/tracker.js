@@ -1,6 +1,6 @@
 (function () {
   // ─── CONFIG ─────────────────────────────────────────
-  const API_URL = "http://localhost:5000";
+  const API_URL = window.CF_API_URL || "https://causalfunnel-backend.onrender.com";
 
   // ─── SESSION MANAGEMENT ─────────────────────────────
   function getSessionId() {
