@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Store — CausalFunnel Test Page</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+      }
+
+      /* Navigation */
+      nav {
+        background: #1a1a2e;
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      nav h1 {
+        color: white;
+        font-size: 20px;
+      }
+
+      nav a {
+        color: #aaa;
+        text-decoration: none;
+        margin-left: 24px;
+        font-size: 14px;
+      }
+
+      /* Hero */
+      .hero {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: white;
+        padding: 80px 32px;
+        text-align: center;
+      }
+
+      .hero h2 {
+        font-size: 42px;
+        margin-bottom: 16px;
+      }
+
+      .hero p {
+        font-size: 18px;
+        color: #aaa;
+        margin-bottom: 32px;
+      }
+
+      .hero button {
+        background: #e94560;
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      /* Products */
+      .products {
+        padding: 48px 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .products h3 {
+        font-size: 28px;
+        margin-bottom: 32px;
+        color: #1a1a2e;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+
+      .product-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .product-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .product-card .emoji {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      .product-card h4 {
+        font-size: 18px;
+        margin-bottom: 8px;
+        color: #1a1a2e;
+      }
+
+      .product-card p {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 16px;
+      }
+
+      .product-card .price {
+        font-size: 22px;
+        font-weight: bold;
+        color: #e94560;
+        margin-bottom: 16px;
+      }
+
+      .product-card button {
+        width: 100%;
+        background: #1a1a2e;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      /* Footer */
+      footer {
+        background: #1a1a2e;
+        color: #aaa;
+        text-align: center;
+        padding: 24px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <h1>🛍️ DemoStore</h1>
+      <div>
+        <a href="#">Home</a>
+        <a href="#">Products</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+      <h2>Welcome to DemoStore</h2>
+      <p>Discover amazing products at unbeatable prices</p>
+      <button onclick="alert('Added to cart!')">Shop Now</button>
+    </div>
+
+    <!-- Products -->
+    <div class="products">
+      <h3>Featured Products</h3>
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="emoji">👟</div>
+          <h4>Running Shoes</h4>
+          <p>Lightweight and comfortable for everyday running</p>
+          <div class="price">₹2,499</div>
+          <button onclick="alert('Added to cart!')">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+          <div class="emoji">🎧</div>
+          <h4>Wireless Headphones</h4>
+          <p>Premium sound quality with noise cancellation</p>
+          <div class="price">₹4,999</div>
+          <button onclick="alert('Added to cart!')">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+          <div class="emoji">⌚</div>
+          <h4>Smart Watch</h4>
+          <p>Track your fitness and stay connected</p>
+          <div class="price">₹8,999</div>
+          <button onclick="alert('Added to cart!')">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+          <div class="emoji">📱</div>
+          <h4>Phone Case</h4>
+          <p>Durable protection with stylish design</p>
+          <div class="price">₹699</div>
+          <button onclick="alert('Added to cart!')">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+          <div class="emoji">💻</div>
+          <h4>Laptop Stand</h4>
+          <p>Ergonomic stand for better posture</p>
+          <div class="price">₹1,299</div>
+          <button onclick="alert('Added to cart!')">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+          <div class="emoji">🎮</div>
+          <h4>Gaming Mouse</h4>
+          <p>Precision gaming with RGB lighting</p>
+          <div class="price">₹2,999</div>
+          <button onclick="alert('Added to cart!')">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2026 DemoStore — Built to test CausalFunnel Analytics</p>
+    </footer>
+
+    <!-- CausalFunnel Tracker -->
+    <!-- This is the tracking script — just one line to add to any website -->
+    <script src="tracker.js"></script>
+  </body>
+</html>

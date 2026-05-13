@@ -64,6 +64,10 @@ def create_event():
             "timestamp": data.get("timestamp", datetime.utcnow().isoformat()),
             "x": data.get("x", None),
             "y": data.get("y", None),
+            "element_tag":   data.get("element_tag"),
+            "element_text":  data.get("element_text"),
+            "element_id":    data.get("element_id"),
+            "element_class": data.get("element_class"),
         }
 
         # Insert into MongoDB events collection
